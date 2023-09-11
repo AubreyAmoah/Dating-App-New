@@ -4,6 +4,7 @@
   "description": "server for the jusTap dating app",
   "main": "index.js",
   "scripts": {
+    "start":"nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Aubrey Amoah",
@@ -18,5 +19,8 @@
     "express-fileupload": "^1.4.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^7.5.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
   }
 }

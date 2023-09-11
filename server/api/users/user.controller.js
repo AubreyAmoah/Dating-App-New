@@ -58,7 +58,7 @@ module.exports = {
         const oldUser = await User.findOne({ email });
 
         if(oldUser) {
-            return res.status(409).json({data:'user already Exists'});
+            return res.status(400).json({data:'user already Exists'});
         }
 
 
@@ -454,22 +454,216 @@ module.exports = {
         }
     },
     submitImages : async (req, res) => {
+        const link = 'http://localhost:5000'
         const { _id } = req.decoded.result;
-        const files = req.files;
-        // let url = undefined;
+        const user = await User.findOne({ _id });
 
-        // Object.keys(files).forEach(key => {
-        //     const filepath = path.join(__dirname, `../../files/${_id}`, files[key].name);
-        //     url = `localhost:3000/${_id}/${files[key].name}`
-
-        //     files[key].mv(filepath, (err) => {
-        //         if(err) return res.status(500).json({ success: 0, message: err })
-        //     })
-        // })
+        const imagesArray = []
+    
+        const bioData = await BioData.findOne({ user });
+        let image_1;
+        let image_2;
+        let image_3;
+        let image_4;
+        let uploadPath;
 
         if (!req.files || Object.keys(req.files).length === 0) {
-            return res.status(400).send('No files were uploaded.');
+            return res.status(400).json('No files were uploaded.');
         }
+
+        image_1 = req.files.image_1
+        if(image_1){
+            uploadPath = `${__dirname}/../../files/images/${_id}/${image_1.name}`;
+            imageLink = `${link}/${_id}/images/${image_1.name}`
+
+            imagesArray.push(imageLink);
+    
+            image_1.mv(uploadPath, err => {
+                if (err){
+                    return res.status(500).json(err);
+                }
+            })
+        } else {
+            return res.status(400).json({
+                message : 'Image needed'
+            })
+        }
+
+        image_2 = req.files.image_2
+        if(image_2){
+            uploadPath = `${__dirname}/../../files/images/${_id}/${image_2.name}`;
+            imageLink = `${link}/${_id}/images/${image_2.name}`;
+
+            imagesArray.push(imageLink);
+    
+            image_2.mv(uploadPath, err => {
+                if (err){
+                    return res.status(500).json(err);
+                }
+            })
+        } else {
+            return res.status(400).json({
+                message : 'Image needed'
+            })
+        }
+
+        image_3 = req.files.image_3
+        if(image_3){
+            uploadPath = `${__dirname}/../../files/images/${_id}/${image_3.name}`;
+            imageLink = `${link}/${_id}/images/${image_3.name}`
+
+            imagesArray.push(imageLink);
+    
+            image_3.mv(uploadPath, err => {
+                if (err){
+                    return res.status(500).json(err);
+                }
+            })
+        } else {
+            return res.status(400).json({
+                message : 'Image needed'
+            })
+        }
+
+        image_4 = req.files.image_4
+        if(image_4){
+            uploadPath = `${__dirname}/../../files/images/${_id}/${image_4.name}`;
+            imageLink = `${link}/${_id}/images/${image_4.name}`
+
+            imagesArray.push(imageLink);
+
+            image_4.mv(uploadPath, err => {
+                if (err){
+                    return res.status(500).json(err);
+                }
+            })
+        } else {
+            return res.status(400).json({
+                message : 'Image needed'
+            })
+        }
+
+        bioData.images = [];
+
+        await bioData.save();
+
+        for(let i = 0; i < imagesArray.length; i++){
+          bioData.images.push(imagesArray[i])
+        }
+
+        await bioData.save();
+
+        return res.status(200).json(bioData);
+    },
+    updateImages : async (req, res) => {
+        const link = 'http://localhost:5000'
+        const { _id } = req.decoded.result;
+        const user = await User.findOne({ _id });
+    
+        const bioData = await BioData.findOne({ user });
+        let image_1;
+        let image_2;
+        let image_3;
+        let image_4;
+        let uploadPath;
+
+        if (!req.files || Object.keys(req.files).length === 0) {
+            return res.status(400).json('No files were uploaded.');
+        }
+
+        image_1 = req.files.image_1
+        if(image_1){
+            uploadPath = `${__dirname}/../../files/images/${_id}/${image_1.name}`;
+            imageLink = `${link}/${_id}/images/${image_1.name}`
+
+            bioData.images[0] = imageLink
+    
+            image_1.mv(uploadPath, err => {
+                if (err){
+                    return res.status(500).json(err);
+                }
+            })
+        }
+
+        image_2 = req.files.image_2
+        if(image_2){
+            uploadPath = `${__dirname}/../../files/images/${_id}/${image_2.name}`;
+            imageLink = `${link}/${_id}/images/${image_2.name}`;
+
+            bioData.images[1] = imageLink
+    
+            image_2.mv(uploadPath, err => {
+                if (err){
+                    return res.status(500).json(err);
+                }
+            })
+        }
+
+        image_3 = req.files.image_3
+        if(image_3){
+            uploadPath = `${__dirname}/../../files/images/${_id}/${image_3.name}`;
+            imageLink = `${link}/${_id}/images/${image_3.name}`
+
+            bioData.images[2] = imageLink
+    
+            image_3.mv(uploadPath, err => {
+                if (err){
+                    return res.status(500).json(err);
+                }
+            })
+        }
+
+        image_4 = req.files.image_4
+        if(image_4){
+            uploadPath = `${__dirname}/../../files/images/${_id}/${image_4.name}`;
+            imageLink = `${link}/${_id}/images/${image_4.name}`
+
+            bioData.images[3] = imageLink
+
+            image_4.mv(uploadPath, err => {
+                if (err){
+                    return res.status(500).json(err);
+                }
+            })
+        }
+
+        await bioData.save();
+
+        return res.status(200).json(bioData);
+    },
+    updateAvatar : async (req, res) => {
+        const link = 'http://localhost:5000'
+        const { _id } = req.decoded.result;
+        const user = await User.findOne({ _id });
+    
+        let avatar;
+        let uploadPath;
+
+        if (!req.files || Object.keys(req.files).length === 0) {
+            return res.status(400).json('No files were uploaded.');
+        }
+
+        avatar = req.files.avatar
+        if(avatar){
+            uploadPath = `${__dirname}/../../files/${_id}/avatar/${avatar.name}`;
+            imageLink = `${link}/${_id}/avatar/${avatar.name}`
+
+            user.profile_pic = imageLink
+    
+            avatar.mv(uploadPath, err => {
+                if (err){
+                    return res.status(500).json(err);
+                }
+            })
+        } else {
+            return res.status(400).json({
+                message : 'Image needed'
+            })
+        }
+
+        await user.save();
+
+        return res.status(200).json(user);
     },
     createVideo : async (req, res) => {},
 }
