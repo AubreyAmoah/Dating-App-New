@@ -10,8 +10,9 @@ const userSchema = new mongoose.Schema({
     dob: {type: Date, required: [true,'Please provide dob']},
     profile_pic: {type:String, default: null},
     activated: {type:Boolean, default:"no"},
-    pending: [{type : String, default: ""}],
-    matches: [{type : String, default: ""}],
+    pending: [{type: mongoose.Schema.Types.ObjectId, ref: 'users'}],
+    to_accept: [{type: mongoose.Schema.Types.ObjectId, ref: 'users'}],
+    matches: [{type: mongoose.Schema.Types.ObjectId, ref: 'users'}],
     password: { type: String },
 });
 

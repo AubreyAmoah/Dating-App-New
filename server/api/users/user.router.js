@@ -1,4 +1,4 @@
-const { userRegister, createVideo, userLogin, handleRefreshTokens, userLogout, createInterest, submitCampus, submitLevelPreference, submitGenderPreference, submitDescription, submitImages, updateImages, updateAvatar } = require('./user.controller');
+const { userRegister, createVideo, userLogin, handleRefreshTokens, userLogout, createInterest, submitCampus, submitLevelPreference, submitGenderPreference, submitDescription, submitImages, updateImages, updateAvatar, addToPending, addToList } = require('./user.controller');
 const fileUpload = require('express-fileupload');
 
 const filesPayloadExists = require('../../middleware/filesPayloadExists');
@@ -15,6 +15,8 @@ router.post('/upload/campus', checkToken, submitCampus);
 router.post('/upload/level-preference', checkToken, submitLevelPreference);
 router.post('/upload/gender-preference', checkToken, submitGenderPreference);
 router.post('/upload/description', checkToken, submitDescription);
+router.post('/addto/pending', checkToken, addToPending);
+router.post('/addto/list', checkToken, addToList);
 
 router.get('/refresh', handleRefreshTokens);
 router.get('/logout', userLogout);

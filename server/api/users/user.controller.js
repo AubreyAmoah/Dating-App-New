@@ -95,7 +95,7 @@ module.exports = {
             user: user._id
         });
 
-        return res.status(200).json({
+        return res.status(201).json({
             success: 1,
             message: 'Registeration successful',
             data: user
@@ -110,7 +110,6 @@ module.exports = {
 
 
         if (user) {
-            console.log(user.password);
             const result = compareSync(body.password, user.password);
 
 
@@ -664,6 +663,97 @@ module.exports = {
         await user.save();
 
         return res.status(200).json(user);
+    },
+    addToPending : async (req, res) => {
+        const { _id } = req.decoded.result;
+
+        const {user_id} = req.body;
+        const user = await User.findOne({ _id });
+        const otherUser = await User.findOne({ _id: user_id })
+
+
+        if (user) {
+
+            if (otherUser) {
+                for(let i = 0; i < user.pending.length; i++) {
+                    if(user.pending[i].equals(user_id)){
+                        user.pending.pop(user_id)
+                    }
+                }
+
+                for(let i = 0; i < otherUser.to_accept.length; i++) {
+                    if(otherUser.to_accept[i].equals(_id)){
+                        otherUser.to_accept.pop(_id)
+                    }
+                }
+        
+                user.pending.push(user_id);
+                otherUser.to_accept.push(_id);
+        
+                await user.save();
+                await otherUser.save();
+    
+                return res.status(200).json({
+                    message: "Success"
+                })
+            } else {
+                return res.status(400).json({
+                    message: "User not found"
+                })
+            }
+
+        } else {
+            return res.status(400).json({
+                message: "User not found"
+            })
+        }
+
+    },
+    addToList : async (req, res) => {
+        const { _id } = req.decoded.result;
+
+        const {user_id} = req.body;
+        const user = await User.findOne({ _id });
+        const otherUser = await User.findOne({ _id: user_id });
+
+
+        if (user) {
+
+            if(otherUser) {
+                for(let i = 0; i < otherUser.pending.length; i++) {
+                    if(otherUser.pending[i].equals(_id)){
+                        otherUser.pending.pop(_id);
+                        otherUser.matches.push(_id);
+                        user.matches.push(user_id);
+                    }
+                }
+
+                for(let i = 0; i < user.to_accept.length; i++) {
+                    if(user.to_accept[i].equals(user_id)){
+                        user.to_accept.pop(user_id)
+                    }
+                }
+        
+                await user.save();
+                await otherUser.save();
+    
+                return res.status(200).json({
+                    message: "Success"
+                })
+            } else {
+                return res.status(400).json({
+                    message: "User not found"
+                })
+            }
+
+        } else {
+            return res.status(400).json({
+                message: "User not found"
+            })
+        }
+    },
+    pushNotification : async (req, res) => {
+        
     },
     createVideo : async (req, res) => {},
 }
